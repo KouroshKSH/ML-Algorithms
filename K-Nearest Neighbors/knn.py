@@ -40,9 +40,14 @@ class knn():
 
 
 def main():
-    points = {"red": [[1,3], [2,4], [5,6]],
-              "blue": [[10,9], [8,9]]}
+    np.random.seed(42)
+    num_points = 20
 
+    # Generate random points for the "red" and "blue" categories
+    red_points = np.random.uniform(low=-5, high=3, size=(num_points, 2))
+    blue_points = np.random.uniform(low=1, high=10, size=(num_points, 2))
+
+    points = {"red": red_points.tolist(), "blue": blue_points.tolist()}
     new_point = [4,5]
 
     start_time = time.time()
@@ -51,7 +56,36 @@ def main():
     classifier.train(points)
     end_time = time.time()
     print(f"The prediction category: {classifier.predict(new_point)}")
-    print(f"Time taken for original code: {end_time - start_time:.6f} seconds\n")
+    print(f"Time taken for prediction: {end_time - start_time:.6f} seconds\n")
+
+    # visualization
+    print("You can now see the plot.")
+    
+    ax = plt.subplot()
+    ax.grid(True, color="#323232")
+    # ax.figure.set_facecolor("#121212")
+    ax.tick_params(axis="x")
+    ax.tick_params(axis="y")
+
+    for point in points["blue"]:
+        ax.scatter(point[0], point[1], color="#104DCA", s=30)
+
+    for point in points["red"]:
+        ax.scatter(point[0], point[1], color="#FF0000", s=30)
+
+    new_category = classifier.predict(new_point)
+    color = "#FF0000" if new_category == "red" else "#104DCA"
+    ax.scatter(new_point[0], new_point[1], color=color, marker="*", s=200, zorder=100)
+
+    for point in points["blue"]:
+        ax.plot([new_point[0], point[0]], [new_point[1], point[1]], color="#104CDA", linestyle="--", linewidth=1)
+
+    for point in points["red"]:
+        ax.plot([new_point[0], point[0]], [new_point[1], point[1]], color="#FF0000", linestyle="--", linewidth=1)
+
+    plt.show()
+ 
+
 
 
 if __name__ == "__main__":
